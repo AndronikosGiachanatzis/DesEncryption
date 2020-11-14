@@ -1,10 +1,12 @@
+import destables
+#
+# class des():
 
 
-class des():
+def permutation(key, table):
+    return [key[i-1] for i in table]
 
-    def __init__(self):
-        pass
 
-    def key_schedule(self, key):
-        # discard every 8th bit
-        pass
+def key_schedule(key):
+    # discard every 8th bit
+    permut = permutation(key, destables.PC_1)

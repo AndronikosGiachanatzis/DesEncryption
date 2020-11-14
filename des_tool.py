@@ -1,4 +1,5 @@
 import des
+import destables
 
 # split the key in hex numbers
 def splitKey(s):
@@ -14,8 +15,9 @@ def splitKey(s):
 
     # convert it to a list and discard the parity bits
     key = []
-    for i in temp:
-        key.append([j for j in i[:-1]])
+    for char in temp:
+        for bit in char:
+            key.append(bit)
     return key
 
 
@@ -25,7 +27,7 @@ def main():
 
     # split the key into a 8x7 list (with the parity bits removed
     key_list = splitKey(key)
-    print(key_list)
+    des.key_schedule(key_list)
 
 
 
