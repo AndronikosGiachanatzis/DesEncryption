@@ -1,6 +1,7 @@
 import des
 import destables
 
+
 # split the key in hex numbers
 def splitKey(s):
 
@@ -22,12 +23,14 @@ def splitKey(s):
 
 
 def main():
+    # validation could be added but since input is hardcoded there is no need to do that
     key = "133457799BBCDFF1"
     plaintext = "GIACHANA"
 
-    # split the key into a 8x7 list (with the parity bits removed
+    # split the key and get the 16 subkeys
     key_list = splitKey(key)
-    des.key_schedule(key_list)
+    subkeys = des.key_schedule(key_list)
+
 
 
 
