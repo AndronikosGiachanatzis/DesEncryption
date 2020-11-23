@@ -6,6 +6,10 @@ import destables
 def permutation(block, table):
     return [block[i-1] for i in table]
 
+def expand(block, table):
+    return [block[i-1] for i in table]
+
+
 
 def lshift(block, n):
     return block[n:] + block[:n]
@@ -19,6 +23,9 @@ def splitKey(key):
         d.append(key[i+len(key)//2])
 
     return c, d
+
+def splitBlock(block):
+    return splitKey(block)
 
 
 def key_schedule(key):
@@ -44,7 +51,8 @@ def key_schedule(key):
 
     return keys
 
-
+def xor(r, key):
+    pass
 
 
 
