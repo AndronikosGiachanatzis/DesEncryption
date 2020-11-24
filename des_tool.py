@@ -12,6 +12,31 @@ import concurrent.futures
 # split the key in hex numbers
 
 ROUNDS = 16
+def bit_array_to_string(array): #Recreate the string from the bit array
+    res = ''.join([chr(int(y,2)) for y in [''.join([str(x) for x in _bytes]) for _bytes in  nsplit(array,8)]])
+    return res
+
+def nsplit(s, n):#Split a list into sublists of size "n"
+    return [s[k:k+n] for k in range(0, len(s), n)]
+
+
+def binToString(l):
+    result = str()
+    bytes = list()
+    characters = str()
+    for i in range(0, len(l), 8):
+        bytes.append(l[i:i+8])
+        # print(bytes)
+        c = str()
+        for b in bytes[i//8]:
+            c += str(b)
+        print(c)
+
+    print(result)
+
+
+    # print(bytes)
+    return bytes
 
 def toBinary(data, encoding=None, step=1):
 
@@ -115,16 +140,46 @@ def main():
 
     # get the ip of the block
     block = future_block.result()
-    print(block)
     # split the block
     l, r = des.splitBlock(block)
 
     print(" starting rounds...")
+    result = list()
     # start the 16 rounds
     for i in range(ROUNDS):
         # expand r to 48
         exp_r = des.expand(r, destables.E)
+        # xor r with key
         x = des.xor(exp_r, subkeys[i])
+        # apply SBOXes to x (splitting is done internally)
+        x = des.substitute(x)
+        # perform permutation
+        x = des.permutation(x, destables.P)
+        # xor x with r
+        x = des.xor(l, x)
+        l = r
+        r = x
+
+    result += des.permutation(r+l, destables.FP)
+    print("[+] ENCRYPTION SUCCESSFUL")
+
+    # print ciphertext
+    ciphertext = bit_array_to_string(result)
+    print("\n\nciphertext: %r"  %ciphertext)
+
+    # print hex format
+    hex_ciphertext = ''.join([hex(int(ord(i)))[2:]+" " for i in ciphertext])
+    print("\tas hex: ", hex_ciphertext)
+
+    # write to file
+    print("\nWriting to file: 'ciphertext.txt'")
+    with open('ciphertext.txt', "w") as fout:
+        fout.write(ciphertext)
+        fout.write("\n\n\n")
+        fout.write(hex_ciphertext)
+
+
+
 
 
 

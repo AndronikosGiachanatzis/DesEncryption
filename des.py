@@ -1,6 +1,5 @@
 import destables
-#
-# class des():
+
 
 
 def permutation(block, table):
@@ -51,10 +50,33 @@ def key_schedule(key):
 
     return keys
 
+
 def xor(r, key):
-    pass
+    # zip every corresponding bit pair and perform bitwise xor
+    return [x ^ y for x, y in zip(r,key)]
+
+
+def substitute(block):
+
+    # break block into 8 6-bit blocks
+    sub_blocks = breakBlock(block)
+    # apply the sboxes in each block
+    result = list()
+    for i in range(len(sub_blocks)):
+        b = sub_blocks[i]
+        # get the 1st and last bit together
+        m_row = int(str(b[0]) + str(b[5]), 2)
+        # get the 2-5 bits together
+        n_column = int(''.join([str(i) for i in b[1:][:-1]]), 2)
+        # get the value of the sbox
+        s_value = destables.S_BOX[i][m_row][n_column]
+        bin_svalue = bin(s_value)[2:].zfill(8)[4:]
+        result += [int(i) for i in bin_svalue]
+    return result
 
 
 
-
+def breakBlock(block):
+    # break the block into 8 6-bit sub-blocks
+    return [block[i:i+6] for i in range(0, len(block), 6)]
 
