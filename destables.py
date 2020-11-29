@@ -7,7 +7,7 @@ Description: This module is supplementary to the des.py and des_tool.py module
 '''
 
 # First permutations table of the key schedule phase
-PC_1 = [57, 49, 41, 33, 25, 17, 9,
+PK_1 = [57, 49, 41, 33, 25, 17, 9,
         1, 58, 50, 42, 34, 26, 18,
         10, 2, 59, 51, 43, 35, 27,
         19, 11, 3, 60, 52, 44, 36,
@@ -22,7 +22,7 @@ SHIFT = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1]
 
 
 # Second permutations table of the key schedule phase
-PC_2 = [14, 17, 11, 24, 1, 5, 3, 28,
+PK_2 = [14, 17, 11, 24, 1, 5, 3, 28,
         15, 6, 21, 10, 23, 19, 12, 4,
         26, 8, 16, 7, 27, 20, 13, 2,
         41, 52, 31, 37, 47, 55, 30, 40,

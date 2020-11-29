@@ -88,7 +88,7 @@ def key_schedule(key):
     keys = []
 
     # perform the Permutation Choice 1
-    perm_key = permutation(key, destables.PC_1)
+    perm_key = permutation(key, destables.PK_1)
     # split the key in 2 halves
     c, d = split_key(perm_key)
 
@@ -102,7 +102,7 @@ def key_schedule(key):
         perm_key = c + d # merge the 2 halves
 
         # add the subkey to the subkey list
-        keys.append(permutation(perm_key, destables.PC_2))
+        keys.append(permutation(perm_key, destables.PK_2))
 
     return keys
 
