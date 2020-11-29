@@ -2,7 +2,10 @@
 '''
 Author: Andronikos Giachanatzis
 
-Description: This module is the main module which initializes the encryption process of DES (ECB)
+Description: This module is the main module which starts the encryption process of DES (ECB)
+             It contains the main method which performs all the key functions for the encryption, but relies on the
+             des.py module for the core functions. It contains also some supplementary functions mostly for reformatting
+             of the data
 '''
 
 import des
