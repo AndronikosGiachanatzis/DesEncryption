@@ -1,32 +1,54 @@
 #!/usr/bin/python3
 '''
 Author: Andronikos Giachanatzis
+
+Description: This module is the main module which initializes the encryption process of DES (ECB)
 '''
 
 import des
 import destables
-import threading
-import time
 import concurrent.futures
 
-# split the key in hex numbers
-
+# number of rounds
 ROUNDS = 16
-def bit_array_to_string(array): #Recreate the string from the bit array
-    res = ''.join([chr(int(y,2)) for y in [''.join([str(x) for x in _bytes]) for _bytes in  nsplit(array,8)]])
+
+
+def bit_array_to_string(lst):
+    '''
+    Transforms a bit array into a string representation of the data
+    Parameters:
+        -lst (list): The bit list:
+    Returns:
+        -(String): The String representation of the given bit array:
+    '''
+    res = ''.join([chr(int(y, 2)) for y in [''.join([str(x) for x in b]) for b in nsplit(lst, 8)]])
     return res
 
-def nsplit(s, n):#Split a list into sublists of size "n"
-    return [s[k:k+n] for k in range(0, len(s), n)]
+
+def nsplit(lst, n):
+    '''
+    Splits a given list into sub-lists of size n
+    Parameters:
+        -s (list): The list which will be splitted:
+        -n (int): The size of each sublist:
+    Returns:
+        -(list): A list comprised by sublists each of size n:
+    '''
+    return [lst[k:k+n] for k in range(0, len(lst), n)]
 
 
 def binToString(l):
+    '''
+    Converts a list of bits into string format
+    Parameters:
+        -l (list): The bit list
+    Returns:
+        -(String): The String representation of the bits
+    '''
     result = str()
     bytes = list()
-    characters = str()
     for i in range(0, len(l), 8):
         bytes.append(l[i:i+8])
-        # print(bytes)
         c = str()
         for b in bytes[i//8]:
             c += str(b)
@@ -34,20 +56,36 @@ def binToString(l):
 
     print(result)
 
-
-    # print(bytes)
     return bytes
 
+
 def toBinary(data, encoding=None, step=1):
+    '''
+    Converts a string (decimal or hexadecimal) to binary
+    Parameters:
+        -data (String): The data to be converted to binary
+        -encoding (int): the format (none for decimal, 16 for hexadecimal) of the given data
+        -step (int): the step with which the data will be read
+    Returns:
+        -(String/list): The data in binary format. The return type is based on the input. If it is in decimal -> String
+            otherwise -> list
+    '''
 
     if encoding is None:
-        temp = ''.join(format(ord(i),'b').zfill(8) for i in data)
+        temp = ''.join(format(ord(i), 'b').zfill(8) for i in data)
     else:
         temp = [bin(int(data[i]+data[i+1], 16))[2:] for i in range(0, len(data), step)]
     return temp
 
 
 def splitKey(s):
+    '''
+    Splits the given string and produces the key
+    Paramaters:
+        -s: The string from which the keys will be produced:
+    Returns:
+        -(list): The key as derived from the string:
+    '''
 
     # get the bits
     temp = toBinary(s, 16,  step=2)
@@ -65,11 +103,19 @@ def splitKey(s):
             key.append(bit)
     return key
 
-def listToIntegers(keys):
-    for i in range(len(keys)):
-        for j in range(len(keys[i])):
-            keys[i][j] = int(keys[i][j])
-    return keys
+
+def listToIntegers(lst):
+    '''
+    Converts a list's elements into integers
+    Parameters:
+        -lst (list): The lists whose elements will be converted to integers
+    Returns:
+        -(list): The list with integer elements:
+    '''
+    for i in range(len(lst)):
+        for j in range(len(lst[i])):
+            lst[i][j] = int(lst[i][j])
+    return lst
 
 
 
@@ -81,6 +127,14 @@ def printSubkeysToFile(keys):
 
 
 def getKeys(key):
+    '''
+    Creates the sub-keys from the given key. It is higher-level method than other functions similar to it (in the des.py
+    module specifically)
+    Parameters:
+        -key (list): The original key from which the sub-keys will be derived
+    Returns:
+        -(list): The 16 sub-keys
+    '''
     print(" creating subkeys...")
     # split the key and get the 16 subkeys
     key_list = splitKey(key)
@@ -92,6 +146,13 @@ def getKeys(key):
 
 # perform the initial permutation
 def initialPermutation(block):
+    '''
+    Performs the initial permutation on the first block before the 16 rounds commence
+    Parameters:
+        -block (list): The block on which the permutation will be applied:
+    Returns:
+        -(list): The block after the permutation
+    '''
     print(" performing initial permutation on the block of data")
     # convert plaintext to bits
     block = toBinary(block)
@@ -177,12 +238,6 @@ def main():
         fout.write(ciphertext)
         fout.write("\n\n\n")
         fout.write(hex_ciphertext)
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
