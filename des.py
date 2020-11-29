@@ -46,7 +46,7 @@ def lshift(block, n):
     return block[n:] + block[:n]
 
 
-def splitKey(key):
+def split_key(key):
     '''
     Splits the key into two halves, which are represented as two lists
     Parameters:
@@ -64,7 +64,7 @@ def splitKey(key):
     return c, d
 
 
-def splitBlock(block):
+def split_block(block):
     '''
     Splits a given block into two halves which are represented as two lists. Same funstion as splitKey(), but it's
     defined here also, for correspondence to the steps of DES and for clarity
@@ -73,7 +73,7 @@ def splitBlock(block):
     Returns:
         -(list): A list containing the two halves of the given block:
     '''
-    return splitKey(block)
+    return split_key(block)
 
 
 def key_schedule(key):
@@ -90,7 +90,7 @@ def key_schedule(key):
     # perform the Permutation Choice 1
     perm_key = permutation(key, destables.PC_1)
     # split the key in 2 halves
-    c, d = splitKey(perm_key)
+    c, d = split_key(perm_key)
 
     # generate the 16 subkeys
     for i in range(16):
@@ -130,7 +130,7 @@ def substitute(block):
     '''
 
     # break block into 8 6-bit blocks
-    sub_blocks = breakBlock(block)
+    sub_blocks = break_block(block)
     # apply the sboxes in each block
     result = list()
     for i in range(len(sub_blocks)):
@@ -146,7 +146,7 @@ def substitute(block):
     return result
 
 
-def breakBlock(block):
+def break_block(block):
     '''
     Breaks the given block into 8 6-bit sub-blocks
     Parameters:

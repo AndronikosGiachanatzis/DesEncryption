@@ -13,7 +13,7 @@ import concurrent.futures
 ROUNDS = 16
 
 
-def bit_array_to_string(lst):
+def bit_lst_to_string(lst):
     '''
     Transforms a bit array into a string representation of the data
     Parameters:
@@ -37,29 +37,7 @@ def nsplit(lst, n):
     return [lst[k:k+n] for k in range(0, len(lst), n)]
 
 
-def binToString(l):
-    '''
-    Converts a list of bits into string format
-    Parameters:
-        -l (list): The bit list
-    Returns:
-        -(String): The String representation of the bits
-    '''
-    result = str()
-    bytes = list()
-    for i in range(0, len(l), 8):
-        bytes.append(l[i:i+8])
-        c = str()
-        for b in bytes[i//8]:
-            c += str(b)
-        print(c)
-
-    print(result)
-
-    return bytes
-
-
-def toBinary(data, encoding=None, step=1):
+def to_binary(data, encoding=None, step=1):
     '''
     Converts a string (decimal or hexadecimal) to binary
     Parameters:
@@ -78,7 +56,7 @@ def toBinary(data, encoding=None, step=1):
     return temp
 
 
-def splitKey(s):
+def split_key(s):
     '''
     Splits the given string and produces the key
     Paramaters:
@@ -88,7 +66,7 @@ def splitKey(s):
     '''
 
     # get the bits
-    temp = toBinary(s, 16,  step=2)
+    temp = to_binary(s, 16, step=2)
 
     # add padding
     for i in range(len(temp)):
@@ -104,7 +82,7 @@ def splitKey(s):
     return key
 
 
-def listToIntegers(lst):
+def list_to_integers(lst):
     '''
     Converts a list's elements into integers
     Parameters:
@@ -118,15 +96,7 @@ def listToIntegers(lst):
     return lst
 
 
-
-def printSubkeysToFile(keys):
-    with open("subkeys.txt", "w") as f:
-        for i in keys:
-            f.write(str(i))
-            f.write("\n")
-
-
-def getKeys(key):
+def get_keys(key):
     '''
     Creates the sub-keys from the given key. It is higher-level method than other functions similar to it (in the des.py
     module specifically)
@@ -137,15 +107,15 @@ def getKeys(key):
     '''
     print(" creating subkeys...")
     # split the key and get the 16 subkeys
-    key_list = splitKey(key)
+    key_list = split_key(key)
     subkeys = des.key_schedule(key_list)
-    subkeys = listToIntegers(subkeys)
-    # print(type(subkeys[1][3]))
+    subkeys = list_to_integers(subkeys)
+
     return subkeys
 
 
 # perform the initial permutation
-def initialPermutation(block):
+def initial_permutation(block):
     '''
     Performs the initial permutation on the first block before the 16 rounds commence
     Parameters:
@@ -155,7 +125,7 @@ def initialPermutation(block):
     '''
     print(" performing initial permutation on the block of data")
     # convert plaintext to bits
-    block = toBinary(block)
+    block = to_binary(block)
     # perform the initial permutation of the block using the IP table
     perm_block = des.permutation(block, destables.IP)
 
@@ -190,19 +160,18 @@ def main():
     # create one thread for the creation of the 16 subkeys and another one for the
     # initial block calculation
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        future_subkeys = executor.submit(getKeys, key)
+        future_subkeys = executor.submit(get_keys, key)
         # thread for blocks
-        future_block = executor.submit(initialPermutation, plaintext)
+        future_block = executor.submit(initial_permutation, plaintext)
 
 
     # get the subkeys
     subkeys = future_subkeys.result()
-    printSubkeysToFile(subkeys)
 
     # get the ip of the block
     block = future_block.result()
     # split the block
-    l, r = des.splitBlock(block)
+    l, r = des.split_block(block)
 
     print(" starting rounds...")
     result = list()
@@ -221,11 +190,12 @@ def main():
         l = r
         r = x
 
+    # perform the final permutation
     result += des.permutation(r+l, destables.FP)
     print("[+] ENCRYPTION SUCCESSFUL")
 
     # print ciphertext
-    ciphertext = bit_array_to_string(result)
+    ciphertext = bit_lst_to_string(result)
     print("\n\nciphertext: %r"  %ciphertext)
 
     # print hex format
